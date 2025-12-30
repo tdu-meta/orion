@@ -1,7 +1,7 @@
-# Stock Screener - Detailed System Design
+# Orion - Detailed System Design
 
 ## Overview
-A stock screener system that identifies option trading opportunities based on configurable strategies, with initial focus on the OFI (Option for Income) strategy.
+Orion is a trading signals platform that identifies option trading opportunities based on configurable strategies, with initial focus on the OFI (Option for Income) strategy. Like its namesake, the legendary hunter of Greek mythology, Orion scans the market landscape to track down profitable trading opportunities.
 
 ## Architecture
 
@@ -9,7 +9,7 @@ A stock screener system that identifies option trading opportunities based on co
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Stock Screener System                    │
+│                          Orion System                        │
 ├─────────────────────────────────────────────────────────────┤
 │                                                               │
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
@@ -227,13 +227,13 @@ CREATE TABLE alerts_sent (
 ### Mode 1: CLI Terminal Execution
 ```bash
 # Run once
-python -m stock_screener run --strategy ofi
+orion run --strategy ofi
 
 # Run with custom stock list
-python -m stock_screener run --strategy ofi --symbols AAPL,MSFT,GOOGL
+orion run --strategy ofi --symbols AAPL,MSFT,GOOGL
 
 # Scheduled execution (using cron)
-0 */2 * * * python -m stock_screener run --strategy ofi --notify email
+0 */2 * * * orion run --strategy ofi --notify email
 ```
 
 ### Mode 2: Cloud Service (AWS Lambda + EventBridge)
@@ -503,6 +503,7 @@ def test_ofi_end_to_end_with_historical_data()
 
 ### Core
 - **Language**: Python 3.11+
+- **Package Name**: orion
 - **Async Framework**: asyncio + aiohttp
 - **Data Processing**: pandas, numpy
 - **Technical Analysis**: ta-lib or pandas-ta

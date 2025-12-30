@@ -1,7 +1,7 @@
-# Stock Screener - Implementation Plan
+# Orion - Implementation Plan
 
 ## Overview
-This document provides a step-by-step implementation plan with tests for building the stock screener system. Each phase includes clear deliverables, tests to write, and success criteria.
+This document provides a step-by-step implementation plan with tests for building Orion, a trading signals platform. Each phase includes clear deliverables, tests to write, and success criteria.
 
 ---
 
@@ -13,9 +13,9 @@ This document provides a step-by-step implementation plan with tests for buildin
 **Tasks**:
 1. Create project directory structure:
    ```
-   stock_screener/
+   orion/
    ├── src/
-   │   ├── stock_screener/
+   │   ├── orion/
    │   │   ├── __init__.py
    │   │   ├── core/
    │   │   ├── data/
@@ -41,12 +41,12 @@ This document provides a step-by-step implementation plan with tests for buildin
 # tests/test_project_setup.py
 def test_package_importable():
     """Verify package can be imported"""
-    import stock_screener
-    assert stock_screener.__version__
+    import orion
+    assert orion.__version__
 
 def test_config_loads():
     """Verify configuration can be loaded"""
-    from stock_screener.config import load_config
+    from orion.config import load_config
     config = load_config()
     assert config is not None
 ```
@@ -65,7 +65,7 @@ def test_config_loads():
 **Tasks**:
 1. Create configuration data models using Pydantic:
    ```python
-   # src/stock_screener/config.py
+   # src/orion/config.py
    from pydantic_settings import BaseSettings
 
    class DataProviderConfig(BaseSettings):
@@ -136,7 +136,7 @@ def test_missing_required_field_fails():
 
 **Implementation**:
 ```python
-# src/stock_screener/utils/logging.py
+# src/orion/utils/logging.py
 import structlog
 
 def setup_logging(level: str = "INFO"):
@@ -181,7 +181,7 @@ def test_structured_context():
 **Tasks**:
 1. Create data models for quotes, option chains, technical indicators:
    ```python
-   # src/stock_screener/data/models.py
+   # src/orion/data/models.py
    from dataclasses import dataclass
    from datetime import date, datetime
    from decimal import Decimal
@@ -266,7 +266,7 @@ def test_ohlcv_from_dict():
 **Tasks**:
 1. Define abstract base class:
    ```python
-   # src/stock_screener/data/provider.py
+   # src/orion/data/provider.py
    from abc import ABC, abstractmethod
    from datetime import date
    from .models import Quote, OptionChain, OHLCV
@@ -332,7 +332,7 @@ def test_historical_data_ordered_by_date():
 
 **Implementation**:
 ```python
-# src/stock_screener/data/providers/alpha_vantage.py
+# src/orion/data/providers/alpha_vantage.py
 import aiohttp
 from tenacity import retry, stop_after_attempt, wait_exponential
 from ..provider import DataProvider
@@ -399,7 +399,7 @@ async def test_retry_on_timeout():
 **Tasks**:
 1. Create cache manager with TTL support:
    ```python
-   # src/stock_screener/data/cache.py
+   # src/orion/data/cache.py
    from cachetools import TTLCache
    import sqlite3
    from typing import Any, Callable
@@ -487,7 +487,7 @@ def test_cache_statistics():
 **Tasks**:
 1. Create indicator calculator class:
    ```python
-   # src/stock_screener/analysis/indicators.py
+   # src/orion/analysis/indicators.py
    import pandas as pd
    import numpy as np
    from ..data.models import OHLCV, TechnicalIndicators
@@ -604,7 +604,7 @@ def test_calculate_all_indicators():
 **Tasks**:
 1. Create pattern detector:
    ```python
-   # src/stock_screener/analysis/patterns.py
+   # src/orion/analysis/patterns.py
    from ..data.models import OHLCV
 
    class PatternDetector:
@@ -692,7 +692,7 @@ def test_normal_volume_not_flagged():
 **Tasks**:
 1. Create strategy model and parser:
    ```python
-   # src/stock_screener/strategies/models.py
+   # src/orion/strategies/models.py
    from dataclasses import dataclass
    from typing import Any
 
@@ -711,7 +711,7 @@ def test_normal_volume_not_flagged():
        entry_conditions: list[Condition]
        option_screening: dict[str, Any]
 
-   # src/stock_screener/strategies/parser.py
+   # src/orion/strategies/parser.py
    import yaml
    from pathlib import Path
 
@@ -769,7 +769,7 @@ def test_missing_required_field():
 **Tasks**:
 1. Create rule evaluator:
    ```python
-   # src/stock_screener/strategies/evaluator.py
+   # src/orion/strategies/evaluator.py
    from ..data.models import Quote, TechnicalIndicators, OHLCV
    from ..analysis.indicators import IndicatorCalculator
    from ..analysis.patterns import PatternDetector
@@ -965,7 +965,7 @@ def test_check_bounce_condition(ofi_strategy):
 **Tasks**:
 1. Implement option analysis:
    ```python
-   # src/stock_screener/strategies/option_analyzer.py
+   # src/orion/strategies/option_analyzer.py
    from ..data.models import OptionChain, OptionContract
    from decimal import Decimal
    from datetime import date, timedelta
@@ -1112,7 +1112,7 @@ def test_find_best_opportunity():
 **Tasks**:
 1. Create main screener class:
    ```python
-   # src/stock_screener/core/screener.py
+   # src/orion/core/screener.py
    import asyncio
    from typing import AsyncIterator
    from ..data.provider import DataProvider
@@ -1255,7 +1255,7 @@ async def test_concurrent_limit_respected(mock_provider, ofi_strategy):
 **Tasks**:
 1. Create notification service:
    ```python
-   # src/stock_screener/notifications/service.py
+   # src/orion/notifications/service.py
    import smtplib
    from email.mime.text import MIMEText
    from email.mime.multipart import MIMEMultipart
@@ -1397,7 +1397,7 @@ def test_query_results_by_date_range():
 **Tasks**:
 1. Create CLI with Click:
    ```python
-   # src/stock_screener/cli.py
+   # src/orion/cli.py
    import click
    from .core.screener import StockScreener
    from .strategies.parser import StrategyParser
