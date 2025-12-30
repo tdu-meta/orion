@@ -1,0 +1,8 @@
+# Development dependencies
+pytest>=7.4
+pytest-asyncio>=0.23
+pytest-mock>=3.12
+pytest-cov>=4.1
+black>=23.12
+ruff>=0.1
+mypy>=1.8

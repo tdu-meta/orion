@@ -53,12 +53,13 @@ orion history AAPL
 
 ## 📋 Project Status
 
-**Current Phase**: Design & Planning ✅
+**Current Phase**: Phase 1 Complete ✅ | Phase 2 In Progress
 
 - ✅ System architecture designed
 - ✅ Implementation plan created (7-week roadmap)
 - ✅ OFI (Option for Income) strategy defined
-- ⏳ Implementation starting soon
+- ✅ Phase 1: Foundation & Infrastructure (Configuration, Logging)
+- ⏳ Phase 2: Data Layer (In Progress)
 
 ## 🎓 Strategies
 
@@ -144,11 +145,65 @@ orion/
 - **Cloud**: AWS Lambda + EventBridge
 - **Notifications**: SMTP email
 
+## 🧪 Testing & CI/CD
+
+### Running Tests Locally
+
+```bash
+# Run all tests
+make test
+
+# Run with coverage report
+make test-cov
+
+# Run only unit tests
+make test-unit
+
+# Run linting and formatting
+make lint
+make format
+
+# Run type checking
+make type-check
+
+# Run all CI checks locally
+make ci
+```
+
+### Automated Testing
+
+Tests are automatically triggered on every push and pull request via GitHub Actions:
+
+- ✅ **Unit Tests**: Run on Python 3.11 and 3.12
+- ✅ **Code Coverage**: Tracked with pytest-cov
+- ✅ **Linting**: Black, Ruff
+- ✅ **Type Checking**: mypy
+
+See [.github/workflows/test.yml](.github/workflows/test.yml) for the full CI configuration.
+
+### Pre-commit Hooks (Optional)
+
+Install pre-commit hooks to run tests before each commit:
+
+```bash
+make pre-commit
+# or
+pip install pre-commit
+pre-commit install
+```
+
+This will automatically run:
+- Code formatting (black)
+- Linting (ruff)
+- Type checking (mypy)
+- All unit tests
+
 ## 📖 Documentation
 
 - [Detailed System Design](design/system_design_detailed.md) - Complete architecture and component specifications
 - [Implementation Plan](design/implementation_plan.md) - 7-week phased development plan with tests
 - [OFI Strategy](strategies/ofi.md) - Option for Income strategy details
+- [Phase 1 Complete](PHASE1_COMPLETE.md) - Summary of foundation implementation
 
 ## 🛣️ Roadmap
 
