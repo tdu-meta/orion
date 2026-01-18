@@ -14,7 +14,7 @@ Trading signals platform for identifying Option for Income (OFI) opportunities. 
 | 3 | Technical Analysis | ✅ COMPLETE | All indicators and patterns implemented |
 | 4 | Strategy Engine | ✅ COMPLETE | Parser, evaluator, option analyzer working |
 | 5 | Screening Orchestration | ✅ COMPLETE | Core screener + notifications |
-| 6 | CLI & Storage | ❌ TODO | CLI + Database |
+| 6 | CLI & Storage | ✅ COMPLETE | CLI + SQLite with aiosqlite |
 | 7 | Cloud Deployment | ❌ TODO | AWS Lambda |
 
 ---
@@ -123,30 +123,54 @@ Phase 5 has been successfully implemented with all required components passing t
 
 ---
 
-## Phase 6: CLI and Storage (TODO)
 
-### Files to Create
-- `src/orion/cli.py` - Click CLI application
-- `src/orion/storage/__init__.py`
-- `src/orion/storage/database.py` - Database schema
-- `src/orion/storage/repository.py` - Result repository
 
-### Requirements (from specs/cli-and-storage.md)
+## Phase 6: CLI and Storage (COMPLETE)
+
+### Summary
+Phase 6 has been successfully implemented with all required components passing tests. The CLI provides commands for running screenings, viewing history, and checking system status. The storage layer provides SQLite persistence with async/await support.
+
+### Files Created
+- `src/orion/cli.py` - Click CLI application with run/history/status commands
+- `src/orion/storage/__init__.py` - Storage module exports
+- `src/orion/storage/database.py` - Database class with schema management
+- `src/orion/storage/repository.py` - ResultRepository for CRUD operations
+- `tests/unit/test_storage.py` - Tests for storage module (18 tests)
+
+### Key Features Implemented
 1. **CLI Commands:**
-   - `run` - Execute screening
-   - `history` - View screening history
-   - `status` - Show system status
+   - `run` - Execute screening with --strategy, --symbols, --notify, --dry-run options ✅
+   - `history` - View screening history with --symbol, --days, --matches-only filters ✅
+   - `status` - Show system status including last run, statistics, config ✅
 
-2. **Results Storage:**
-   - SQLite with aiosqlite
-   - screening_runs table
-   - screening_results table
-   - Repository interface for CRUD
+2. **Database Schema:**
+   - screening_runs table (id, timestamp, strategy_name, symbols_count, matches_count, duration_seconds) ✅
+   - screening_results table (id, run_id, symbol, timestamp, matches, signal_strength, conditions_met/missed, quote/indicators/option JSON) ✅
+   - Indexes on run_id, symbol, timestamp, matches for efficient queries ✅
+   - Foreign key with CASCADE delete for referential integrity ✅
 
-3. **Configuration:**
-   - ~/.orion/config.yaml
-   - XDG config directory support
-   - Environment variable overrides
+3. **Repository Interface:**
+   - save_run() - Save screening run metadata ✅
+   - save_result() - Save individual screening result ✅
+   - save_results() - Save multiple results ✅
+   - get_results_by_symbol() - Query history by symbol ✅
+   - get_recent_matches() - Get recent matching results ✅
+   - get_statistics() - Aggregate statistics ✅
+   - get_recent_runs() - Recent screening runs ✅
+
+4. **Configuration:**
+   - XDG config directory support (~/.config/orion/) ✅
+   - Database stored at ~/.config/orion/data/screenings.db ✅
+   - Default strategy path resolution ✅
+   - NotificationConfig from environment variables ✅
+
+### Dependencies Added
+- aiosqlite ^0.19 - Async SQLite operations
+- pyxdg ^0.27 - XDG directory support
+
+### Tests
+- All 18 tests passing for storage module
+- Total: 193 unit tests passing (175 + 18 new)
 
 ---
 
